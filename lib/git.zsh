@@ -3,7 +3,7 @@ function git_prompt_info() {
   if [[ "$(git config --get oh-my-zsh.hide-status)" != "1" ]]; then
     ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
     ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    echo "$ZSH_THEME_GIT_PROMPT_FILLER$ZSH_THEME_GIT_PROMPT_PREFIX$(parse_git_dirty)${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
   fi
 }
 
@@ -41,13 +41,13 @@ git_remote_status() {
 
         if [ $ahead -eq 0 ] && [ $behind -gt 0 ]
         then
-            echo "$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE"
+            echo "$ZSH_THEME_GIT_PROMPT_FILLER$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE$behind"
         elif [ $ahead -gt 0 ] && [ $behind -eq 0 ]
         then
-            echo "$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE"
+            echo "$ZSH_THEME_GIT_PROMPT_FILLER$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE$ahead"
         elif [ $ahead -gt 0 ] && [ $behind -gt 0 ]
         then
-            echo "$ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE"
+            echo "$ZSH_THEME_GIT_PROMPT_FILLER$ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE"
         fi
     fi
 }
@@ -73,46 +73,79 @@ function git_prompt_long_sha() {
 git_prompt_status() {
   INDEX=$(command git status --porcelain -b 2> /dev/null)
   STATUS=""
+  PRE_STATUS=""
+  POST_STATUS=""
   if $(echo "$INDEX" | grep -E '^\?\? ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^A  ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   elif $(echo "$INDEX" | grep '^M  ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^ M ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   elif $(echo "$INDEX" | grep '^AM ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   elif $(echo "$INDEX" | grep '^ T ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^R  ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_RENAMED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^ D ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   elif $(echo "$INDEX" | grep '^D  ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   elif $(echo "$INDEX" | grep '^AD ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(command git rev-parse --verify refs/stash >/dev/null 2>&1); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_STASHED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^UU ' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_UNMERGED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^## .*ahead' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_AHEAD$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^## .*behind' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_BEHIND$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
   if $(echo "$INDEX" | grep '^## .*diverged' &> /dev/null); then
+    PRE_STATUS="$ZSH_THEME_GIT_PROMPT_PRESTATUS"
     STATUS="$ZSH_THEME_GIT_PROMPT_DIVERGED$STATUS"
+    POST_STATUS="$ZSH_THEME_GIT_PROMPT_POSTSTATUS"
   fi
+  STATUS="$PRE_STATUS$STATUS$POST_STATUS"
   echo $STATUS
 }
 

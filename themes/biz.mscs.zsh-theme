@@ -48,7 +48,7 @@ local -a infoline
 infoline+=( "╭─" )
 infoline+=( "${PR_USER_COLOR}%n${PR_CYAN}@${PR_NO_COLOR}" )
 infoline+=( "${PR_HOST_COLOR}%M${PR_NO_COLOR}" )
-infoline+=( " $(git_prompt_info)%{$PR_NO_COLOR%}" )
+infoline+=( " $(git_prompt_info)%{$PR_NO_COLOR%}%{$PR_BOLD$PR_BLACK%}$(git_prompt_short_sha)$(git_prompt_status)$(git_remote_status)" )
 infoline+=( "%{$PR_BOLD$PR_BLACK%}[%{$PR_NO_COLOR%} %D{%H:%M:%S} %{$PR_BOLD$PR_BLACK%}]%{$PR_NO_COLOR%}" )
 
 local i_width
@@ -74,8 +74,8 @@ RPS1="${return_code}"
 #ZSH_THEME_GIT_PROMPT_PREFIX="%{$PR_YELLOW%}‹"
 #ZSH_THEME_GIT_PROMPT_SUFFIX="› %{$PR_NO_COLOR%}"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$PR_BOLD$PR_BLACK%}- [git: "
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$PR_BOLD$PR_BLACK%}] -%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$PR_BOLD$PR_BLACK%} ---[git: "
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$PR_BOLD$PR_BLACK%} ]--- "
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}" # Ⓓ
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}" # Ⓞ
 
@@ -85,3 +85,8 @@ ZSH_THEME_GIT_PROMPT_MODIFIED="%{$fg[red]%}~"  # ⓜ ⑁
 ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[red]%}✖" # ⓧ ⑂
 ZSH_THEME_GIT_PROMPT_RENAMED="%{$fg[blue]%}➜" # ⓡ ⑄
 ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[magenta]%}✂" # ⓤ ⑊
+ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="behind: "
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="ahead: "
+ZSH_THEME_GIT_PROMPT_FILLER=" "
+ZSH_THEME_GIT_PROMPT_PRESTATUS="%{$PR_BOLD$PR_BLACK%} [ "
+ZSH_THEME_GIT_PROMPT_POSTSTATUS="%{$PR_BOLD$PR_BLACK%} ]"
