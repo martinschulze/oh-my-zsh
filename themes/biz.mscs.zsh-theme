@@ -48,7 +48,7 @@ local -a infoline
 infoline+=( "╭─" )
 infoline+=( "${PR_USER_COLOR}%n${PR_CYAN}@${PR_NO_COLOR}" )
 infoline+=( "${PR_HOST_COLOR}%M${PR_NO_COLOR}" )
-infoline+=( " $(git_prompt_info)%{$PR_NO_COLOR%}%{$PR_BOLD$PR_BLACK%}$(git_prompt_short_sha)$(git_prompt_status)$(git_remote_status)" )
+infoline+=( " $(git_prompt_info)%{$PR_NO_COLOR%}%{$PR_BOLD$PR_BLACK%}$(git_prompt_short_sha) -$(git_prompt_status)$(git_remote_status)" )
 infoline+=( "%{$PR_BOLD$PR_BLACK%}[%{$PR_NO_COLOR%} %D{%H:%M:%S} %{$PR_BOLD$PR_BLACK%}]%{$PR_NO_COLOR%}" )
 
 local i_width
